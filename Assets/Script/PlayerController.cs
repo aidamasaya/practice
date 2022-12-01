@@ -12,30 +12,42 @@ public class PlayerController : MonoBehaviour
     SpriteRenderer _sprite = default;
 
     float h = 0;
-    int _jumpcount = 0;
+    [SerializeField]  int _jumpcount = 0;
+    GameManager _gamemaneger;
+
+    /// <summary>
+    /// 継承クラスのオブジェクト
+    /// </summary>
+    GameObject _teacher;
+    GameObject _opera;
+    GameObject _dealer;
+    [SerializeField] string _name = "Normal";
     void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
         _sprite = GetComponent<SpriteRenderer>();
     }
 
-    
+    Status s = new Status();
     void Update()
     {
         Vector2 velocity = _rb.velocity;
         h = Input.GetAxisRaw("Horizontal");
         if (Input.GetButtonDown("Jump") && _jumpcount < 1)
         {
-            _jumpcount++;
+            //_jumpcount = 1;
             velocity.y = _jumppower;
         }
-        else if(!Input.GetButtonDown("Jump") && velocity.y > 0)
-        {
-            velocity.y *= _gravityDrag;
-        }
+        //else if(!Input.GetButton("Jump") && velocity.y > 0)
+        //{
+        //    _jumpcount++;
+        //    velocity.y *= _gravityDrag;
+        //}
         _rb.velocity = velocity;
 
         jumpRay();
+
+        
     }
     private void FixedUpdate()
     {
@@ -44,7 +56,29 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        
+        if(collision.gameObject.tag == "enemy")
+        {
+            GameManager.instance.Damage(1);
+        }
+        if(collision.gameObject.tag == "Teacher")
+        {
+            Destroy(this.gameObject);
+            Instantiate(_teacher);
+            _name = "Teacher";
+        }
+        else if(collision.gameObject.tag == "Opera")
+        {
+            Destroy(this.gameObject);
+            Instantiate(_opera);
+            _name = "Opera";
+        }
+        else if(collision.gameObject.tag == "Dealer")
+        {
+            Destroy(this.gameObject);
+            Instantiate(_dealer);
+            _name = "Dealer";
+        }
+
     }
     private void LateUpdate()
     {
@@ -62,7 +96,7 @@ public class PlayerController : MonoBehaviour
         //}
     }
 
-    [SerializeField] Vector2 _lineForGround = new Vector2(0f, -2f);
+    [SerializeField] Vector2 _lineForGround = new Vector2(2f, -2f);
     [SerializeField] LayerMask _groundLayer = 0;
     void jumpRay()
     {
@@ -75,7 +109,18 @@ public class PlayerController : MonoBehaviour
         {
             _jumpcount = 0;
         }
+        else if(!hit.collider)
+        {
+            _jumpcount = 1;
+        }
         velo.y = _rb.velocity.y;
         _rb.velocity = velo;
     }
+
+    enum Status
+    {
+        Normal,
+       
+    }
+
 }
