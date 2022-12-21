@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance { get; private set; }
     [Tooltip("Windowsのマウスカーソルをゲーム中に消すかどうかの設定")]
-    [SerializeField] bool _hideCusor = false;
+    [SerializeField] bool _hideCusor = true;
     [Tooltip("ライフの初期値")]
     [SerializeField] public int _initialLife = 5;
     [Tooltip("スコアを表示するためのText(UI)")]
@@ -58,12 +58,12 @@ public class GameManager : MonoBehaviour
     void Start()
     {
          GameStart();
-        _onGameStart.Invoke();
         _text.gameObject.SetActive(true);
         _life = _initialLife;
         _Items = GameObject.FindObjectsOfType<ItemController>().ToList();
-        _scoreText.text = string.Format("{0:000}", _score);
+        _scoreText.text = _totalScore.ToString("d2");
         _item = GetComponent<ItemController>();
+        _hideCusor = true;
     }
 
     public void Restart()
@@ -107,7 +107,7 @@ public class GameManager : MonoBehaviour
     public void AddScore(int score)
     { 
         _totalScore += score;
-        _scoreText.text = string.Format("{0:000}", _totalScore);
+        _scoreText.text = _totalScore.ToString("d2");
     }
 
     public void Damage(int damage)

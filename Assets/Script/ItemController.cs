@@ -10,7 +10,6 @@ public class ItemController : MonoBehaviour
     [SerializeField] float _falling = 0.8f;
 
     public int _addScore = 1;
-    GameManager _gamemaneger;
     void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
